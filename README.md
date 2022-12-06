@@ -2,7 +2,9 @@
 This is the repository to crack cahllenges in advent of code of 2022
 
 day 1: Calorie Counting
+
 day 2: Rock Paper Scissors
+
 day 3: ...
 
 
