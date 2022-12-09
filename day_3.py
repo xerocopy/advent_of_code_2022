@@ -1,15 +1,23 @@
 # Day #3 Rucksack Reorganization
 
 def findcommonitem(str1, str2):
+    items = []
     for i in str1:
-        print(i, 'is the first item in str1')
+        for j in str2:
+            if i == j:
+                items.append(j)
+    return items
+
+
+        print(i, 'is the first item in str1', ord(i))
 
     item = 'a'
     return item
 
 def ascii(char):
     '''
-    Lexicographic order for letters a-z and A-Z
+    ord() returns a unicode of a character
+    chr() returns a character with the given unicode integer
     '''
     return chr(ord(char))
 
