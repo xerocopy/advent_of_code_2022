@@ -44,6 +44,21 @@ def move(stack, command_list):
         move(stack, command_list)
     return stack
 
+def new_move(stack, command_list):
+    num = command_list[0][0]
+    start = command_list[0][1]
+    end = command_list[0][2]
+    for i in range(num):
+        stack[end-1].append(stack[start-1][-num + i])
+        del stack[start-1][-num + i]
+    del command_list[0]
+    if command_list != []:
+        print(stack, command_list[0])
+        new_move(stack, command_list)
+    return stack
+
+
+
 
 if __name__ == '__main__':
     command_list = []
@@ -59,7 +74,7 @@ if __name__ == '__main__':
             elif line[:4] == 'move':
                 command_list = load_command(line.strip('\n'))
     stack = reverse_stack(stack)
-    final_stack = move(stack, command_list)
+    final_stack = new_move(stack, command_list)
     print(final_stack)
     for i in range(9):
         top_crate.append(final_stack[i][-1])

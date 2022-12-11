@@ -11,4 +11,6 @@ Day 4: Camp Clean Up
 
 Day 5: Supply Stacks
 
+Day 6: Turning Trouble
+
 link to [Advent of Code](https://adventofcode.com/) website
