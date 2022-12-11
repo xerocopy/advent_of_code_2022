@@ -9,5 +9,6 @@ Day 3: Rucksack Reorganization
 
 Day 4: Camp Clean Up
 
+Day 5: Supply Stacks
 
 link to [Advent of Code](https://adventofcode.com/) website
