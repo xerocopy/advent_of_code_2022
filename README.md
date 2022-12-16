@@ -13,4 +13,6 @@ Day 5: Supply Stacks
 
 Day 6: Turning Trouble
 
+Day 7 No Space Left On Device (Tree)
+
 link to [Advent of Code](https://adventofcode.com/) website
