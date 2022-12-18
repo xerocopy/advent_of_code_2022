@@ -1,119 +1,97 @@
-import pathlib
-import sys
+from collections import deque
+import re
 
 
-class Node():
-    def __init__(self):
-        self.parent = None
-        self.children = []  # None if file, [] if folder
-        self.name = None
-        self.size = 0
-
-    def print_node(self, action):
-        print(f"'action:{action}'   name: {self.name} parent:{None if self.parent is None else self.parent.name} "
-              f"children_len:"
-              f"{len(self.children) if self.children else None} size:{self.size}")
+CD_RE = re.compile(r'\$ cd (.+)')
+LS_RE = re.compile(r'\$ ls')
+DIR_RE = re.compile(r'dir (.+)')
+FILE_RE = re.compile(r'(\d+) (.+)')
 
 
-def parse(puzzle_input):
-    """Parse input."""
-    terminal = puzzle_input.strip().split("\n")
-    head = None
-    curr_node = None
+class Directory:
+	def __init__(self, name, parent):
+		self.name = name
+		self.parent = parent
+		self.entries = {}
+		self.total_size = 0
 
-    for action in terminal:
-        match action.split(" "):
-            case '$', 'cd', directory:
-                if directory == '..':
-                    curr_node = curr_node.parent
-                elif directory == '/':
-                    head = Node()
-                    head.name = directory
-                    curr_node = head
-                else:
-                    next_node = [child for child in curr_node.children if child.name == directory]
-                    curr_node = next_node[0]
-            case '$', 'ls':
-                continue
-            case 'dir', directory:
-                new_node = Node()
-                new_node.name = directory
-                new_node.parent = curr_node
-                curr_node.children.append(new_node)
-            case size, file:
-                new_node = Node()
-                new_node.children = None
-                new_node.name = file
-                new_node.size = int(size)
-                new_node.parent = curr_node
-                curr_node.children.append(new_node)
+	def prettyprint(self, pad=''):
+		print(f'{pad}- {self.name} (dir, total_size={self.total_size})')
+		for name, entry in sorted(self.entries.items()):
+			child_padding = pad + '  '
+			if isinstance(entry, int):
+				print(f'{child_padding}- {name} (file, size={entry})')
+			else:
+				entry.prettyprint(child_padding)
 
-    calculate_folder_sizes(head, head.size)
+	@staticmethod
+	def parse(lines):
+		root_dir = Directory(name='/', parent=None)
+		current_dir = root_dir
 
-    return head
+		lines = deque(lines)
+		while lines:
+			line = lines.popleft()
 
+			cd_match = CD_RE.match(line)
+			ls_match = LS_RE.match(line)
+			if cd_match:
+				target = cd_match.group(1)
+				if target == '/':
+					current_dir = root_dir
+				elif target == '..':
+					current_dir = current_dir.parent
+				else:
+					current_dir = current_dir.entries[target]
 
-def calculate_folder_sizes(head, size):
-    if head.children is None:
-        return head, head.size
-    else:
-        size_sum = sum([calculate_folder_sizes(child, size)[1] for child in head.children])
-        head.size += size_sum
-        return head, head.size
+			elif ls_match:
+				while lines:
+					line = lines.popleft()
+					dir_match = DIR_RE.match(line)
+					file_match = FILE_RE.match(line)
+					if dir_match:
+						name = dir_match.group(1)
+						new_dir = Directory(name=name, parent=current_dir)
+						current_dir.entries[name] = new_dir
+					elif file_match:
+						size, name = int(file_match.group(1)), file_match.group(2)
+						current_dir.entries[name] = size
+					else:
+						lines.appendleft(line)
+						break
 
+		return root_dir
 
-def sum_directories_less_than_100000(head, total):
-    if head.children is None:
-        return head, total
-    else:
-        total += head.size if head.size <= 100000 else 0
-        for child in head.children:
-            total = sum_directories_less_than_100000(child, total)[1]
+	def assign_total_sizes(self):
+		total = 0
+		for name, entry in self.entries.items():
+			if isinstance(entry, int):
+				total += entry
+			else:
+				entry.assign_total_sizes()
+				total += entry.total_size
 
-        return head, total
-
-
-def smallest_dir_for_shortfall(head, size, shortfall):
-    if head.children is None:
-        return head, size, shortfall
-    else:
-        if size == 0:
-            size = max(size, head.size if head.size >= shortfall else size)
-        else:
-            size = min(size, head.size if head.size >= shortfall else size)
-        for child in head.children:
-            size = smallest_dir_for_shortfall(child, size, shortfall)[1]
-
-        return head, size, shortfall
+		self.total_size = total
 
 
-def part1(head):
-    """Solve part 1."""
-    return sum_directories_less_than_100000(head, 0)[1]
+with open('input7.txt') as input_file:
+	lines = input_file.readlines()
 
+root_directory = Directory.parse(lines)
+root_directory.assign_total_sizes()
+root_directory.prettyprint()
 
-def part2(head):
-    """Solve part 2."""
-    total_used = head.size
-    available = 70000000
-    target_unused = 30000000
-    current_unused = available - total_used
-    shortfall = target_unused - current_unused
-    return smallest_dir_for_shortfall(head, 0, shortfall)[1]
+total = 0
 
+pending = deque()
+pending.append(root_directory)
 
-def solve(puzzle_input):
-    """Solve the puzzle for the given input."""
-    data = parse(puzzle_input)
-    solution1 = part1(data)
-    solution2 = part2(data)
+while pending:
+	item = pending.popleft()
+	if isinstance(item, Directory):
+		pending.extend(item.entries.values())
 
-    return solution1, solution2
+		if item.total_size < 100000:
+			total += item.total_size
 
-
-if __name__ == "__main__":
-    for path in sys.argv[1:]:
-        print(f"{path}:")
-        puzzle_input = pathlib.Path(path).read_text().strip()
-        solutions = solve(puzzle_input)
-        print("\n".join(str(solution) for solution in solutions))
+print(total)
