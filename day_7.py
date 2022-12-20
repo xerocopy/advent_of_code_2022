@@ -46,7 +46,7 @@ def read_command(file):
             filename = cl[1]
             #print(pwd, filename, size)
             dir_size_list.append([pwd, filename, size, 'file']) # this calculate all the files
-    print('total {} commands read! {} files found! {} dir, {} ls, {} cd up, {} cd down'.format(cnt, cnt_file, n_dir, n_ls, n_cd_up, n_cd_down))
+    #print('total {} commands read! {} files found! {} dir, {} ls, {} cd up, {} cd down'.format(cnt, cnt_file, n_dir, n_ls, n_cd_up, n_cd_down))
     return dir_size_list
 
 def find_dir(dir_size_list):
