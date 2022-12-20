@@ -111,22 +111,22 @@ if __name__ == '__main__':
     dir_size_list = read_command(file)
 
 
-    # list of all the files
-    with open('day_7_tmp_dir_size_list.txt', 'w') as f:
-        for i in dir_size_list:
-            f.write(str(i) + '\n')
+    # # list of all the files
+    # with open('day_7_tmp_dir_size_list.txt', 'w') as f:
+    #     for i in dir_size_list:
+    #         f.write(str(i) + '\n')
 
     dir_tar = find_dir(dir_size_list)
     # # dictionary of all directories
-    with open('day_7_tmp_dir_tar.txt', 'w') as f:
-        for i in dir_tar.items():
-            f.write(str(i) + '\n')
+    # with open('day_7_tmp_dir_tar.txt', 'w') as f:
+    #     for i in dir_tar.items():
+    #         f.write(str(i) + '\n')
 
     dir_tar_final = folder_filter(dir_tar)
     # # dictionary of all directories
-    with open('day_7_tmp_dir_tar_final.txt', 'w') as f:
-        for i in dir_tar_final.items():
-            f.write(str(i) + '\n')
+    # with open('day_7_tmp_dir_tar_final.txt', 'w') as f:
+    #     for i in dir_tar_final.items():
+    #         f.write(str(i) + '\n')
 
     tot = cal(dir_tar_final)
     print('Part1 Answer: ', tot)
