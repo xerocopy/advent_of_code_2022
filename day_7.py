@@ -1,4 +1,4 @@
-# Day 7 No Space Left On Device (Tree)
+# Day 7 No Space Left On Device (non - Tree)
 # 1749646
 
 def openfile():
@@ -48,6 +48,7 @@ def read_command(file):
             dir_size_list.append([pwd, filename, size, 'file']) # this calculate all the files
     print('total {} commands read! {} files found! {} dir, {} ls, {} cd up, {} cd down'.format(cnt, cnt_file, n_dir, n_ls, n_cd_up, n_cd_down))
     return dir_size_list
+
 def find_dir(dir_size_list):
     '''
     1. find every directory (including subdirectory)
@@ -67,28 +68,43 @@ def find_dir(dir_size_list):
                 #print(i, pwd, j, dir_size_list[j][0], dir_size_list[j][1], cnt)
                 #print(pwd, dir_size_list[j][0], cnt, dir_size_list[j][1], dir_size_list[j][2])
         #print('{},{}:  There are {} files in directory {}: {} with total size of {}'.format(i,j,cnt, pwd, names, tot_size))
-        if pwd not in dir_tar_final and int(tot_size) < 100000:
-            dir_tar_final[pwd] = [cnt, names, tot_size]
+        if pwd not in dir_tar:
+            dir_tar[pwd] = [cnt, names, tot_size]
+    return dir_tar
+
+
+def folder_filter(dir_tar):
+    for item in dir_tar.items():
+        #print(item[0], item[1][2])
+        if int(item[1][2]) < 100000 and item[0] not in dir_tar_final:
+            #print(item[0], item[1][2])
+            dir_tar_final[item[0]] = int(item[1][2])
     return dir_tar_final
 
-
-def folder_filter(dir_tar_final):
-    for item in dir_tar_final.items():
-        #print(item[0], item[1][2])
-        if int(item[1][2]) < 100000 and item[0] not in final:
-            #print(item[0], item[1][2])
-            final[item[0]] = int(item[1][2])
-    return final
-
-def cal(final):
+def cal(dir_tar_final):
     tot = 0
-    for item in final.items():
-        tot += item[1][2]
+    for item in dir_tar_final.items():
+        tot += item[1]
     return tot
+
+def used_space(dir_size_list):
+    used_space = 0
+    for item in dir_size_list:
+        used_space += int(item[2])
+    return used_space
+
+def which_dir(dir_tar, min_space):
+    min_dir_space = int(70000000)
+    for i in dir_tar.items():
+        if int(i[1][2]) >= min_space and int(i[1][2]) <= min_dir_space:
+            min_dir_space = int(i[1][2])
+            dir = i[0]
+    return min_dir_space, dir
 
 
 if __name__ == '__main__':
     dir_size_list = []
+    dir_tar = {}
     dir_tar_final = {}
     final = {}
     file = openfile()
@@ -100,12 +116,23 @@ if __name__ == '__main__':
         for i in dir_size_list:
             f.write(str(i) + '\n')
 
-    dir_tar_final = find_dir(dir_size_list)
-    # # dictionary of all the satisfactory directories
+    dir_tar = find_dir(dir_size_list)
+    # # dictionary of all directories
+    with open('day_7_tmp_dir_tar.txt', 'w') as f:
+        for i in dir_tar.items():
+            f.write(str(i) + '\n')
+
+    dir_tar_final = folder_filter(dir_tar)
+    # # dictionary of all directories
     with open('day_7_tmp_dir_tar_final.txt', 'w') as f:
         for i in dir_tar_final.items():
             f.write(str(i) + '\n')
 
     tot = cal(dir_tar_final)
-    print(tot)
+    print('part1 awnser: ', tot)
+    min_space = int(used_space(dir_size_list)-40000000)
+    print('used_space: ', used_space(dir_size_list), 'minimum_space_required_to_release : ', min_space)
 
+
+    dir_to_delete = which_dir(dir_tar, min_space)
+    print('Delete {}, size: {}'.format(dir_to_delete[1], dir_to_delete[0]))
