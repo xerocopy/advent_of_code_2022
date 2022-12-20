@@ -129,10 +129,10 @@ if __name__ == '__main__':
             f.write(str(i) + '\n')
 
     tot = cal(dir_tar_final)
-    print('part1 awnser: ', tot)
+    print('Part1 Answer: ', tot)
     min_space = int(used_space(dir_size_list)-40000000)
-    print('used_space: ', used_space(dir_size_list), 'minimum_space_required_to_release : ', min_space)
+    #print('used_space: ', used_space(dir_size_list), 'minimum_space_required_to_release : ', min_space)
 
 
     dir_to_delete = which_dir(dir_tar, min_space)
-    print('Delete {}, size: {}'.format(dir_to_delete[1], dir_to_delete[0]))
+    print('Part2 Answer: Delete {}, size: {}'.format(dir_to_delete[1], dir_to_delete[0]))
