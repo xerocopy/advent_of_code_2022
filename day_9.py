@@ -22,18 +22,37 @@ def movehead(h, line):
     return h
 
 
-def movetail(h_, h, t):
+def movetail(h_, h, t, trail):
     '''
     move the tail following head
+    **************************************************************************
+    ************************************************(0,1)*********************
+    ****(-1,1).****(0.1)**.(1,1)*********************.************************
+    ************.****.***.***************************.************************
+    **************.**.**.****************************.************************
+    *****(-1,0)....(0,0)...(1,0)**********(-1,0).............(1,0)************
+    **************.**.**.****************************.************************
+    ************.****.***.***************************.************************
+    *****(-1,-1).*(0,-1)*.(1,-1)*********************.(0,-1)******************
+    **************************************************************************
+    **************************************************************************
     '''
     x1, y1, l1 = vector(h, t) #vectorise the previous position of ht
     x2, y2, l2 = vector(h_, h) # vectorise the head moving direction
     print(x1, y1, x2, y2)
+    if x1 * x2 >= 0 and y1 * y2 == 0: # moving horizontal same direction, the l2 is the tail moving trail
+        t[] l2
 
+    elif x1 * x2 < 0 and y1 * y2 == 0: # moving horizontal opposite direction, l2 - 2 is the real tail moving trail
+        l2 -2
 
+    elif x1 * x2 == 0 and y1 * y2 >= 0: # moving vertical same direction, l2 is the tail moving trail
+        l2
 
+    elif x1 * x2 == 0 and y1 * y2 < 0: # moving vertical opposite direction, l2 -2 is the real tail moving trail
+        l2 -2
 
-    return
+    return t_, trail
 
 
 def vector(h, t):
@@ -54,7 +73,7 @@ if __name__ == "__main__":
     trail = []    # tail travel history
     for line in file:
         h_ = movehead(h, line.strip())
-        t_ = movetail(h_, h, t)
+        t_, trail = movetail(h_, h, t, trail)
         print(line.strip(), t, h, trail)
 
 
