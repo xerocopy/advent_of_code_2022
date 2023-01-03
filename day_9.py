@@ -1,45 +1,46 @@
 #Day 9: Rope Bridge
-import math
 import numpy as np
 
 def openfile():
-    with open('test.txt', mode = 'r') as f:
+    with open('input9.txt', mode = 'r') as f:
         file = f.readlines()
         return file
 
-def move(h, t, line, trail):
+def move(head, tail, line, trail):
     '''
     give the new h_ position
     '''
-    ori = line[0]
+    direction = line[0]
     step = int(line[-1])
-    if ori == 'U':
-        h[1] += step
-        np.sign()
-        
-
-    elif ori == 'D':
-        h[1] -= step
-    elif ori == 'L':
-        h[0] -= step
-    elif ori == 'R':
-        h[0] += step
-
-
-    
-    
-
+    for _ in range(step):
+        if direction == 'U':
+            head = (head[0], head[1] + 1)
+        elif direction == 'D':
+            head = (head[0], head[1] - 1)
+        elif direction == 'R':
+            head = (head[0] + 1, head[1])
+        elif direction == 'L':
+            head = (head[0] - 1, head[1])
+        x = head[0] - tail[0]
+        y = head[1] - tail[1]
+        if abs(x) > 1 or abs(y) > 1:
+            tail = (tail[0] + np.sign(x), tail[1] + np.sign(y))
+            trail.add(tail)
+            #print(head, tail, trail)
+    return head, tail, trail
 
 
 
 if __name__ == "__main__":
     file = openfile()
-    h = [0,0]
-    t = [0,0]           # initial tail position aka s
-    trail = []    # tail travel history
+    head = (0,0)
+    tail = (0,0)                # initial tail position aka s, in tuples
+    trail = set()               # tail travel history in sets (not dictionary)
+    trail.add(tail)
     for line in file:
-        h  = move(h, t, line.strip())
-        print(line.strip(), t, h, trail)
+        head, tail, trail = move(head, tail, line.strip().split(' '), trail)
+        #print(line.strip(), tail, head, len(trail))
+    print(len(trail))
 
 
 
