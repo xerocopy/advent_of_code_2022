@@ -1,7 +1,7 @@
 # Cathode-Ray Tube
 
 def openfile():
-    with open('test.txt', 'r') as f:
+    with open('input10.txt', 'r') as f:
         file = f.readlines()
         return file
 
@@ -41,7 +41,7 @@ def Part1():
     return sum, cycles
 
 def Part2():
-    n_cycle = 0   # used to decide the drawing sequence/location on screen
+    n_cycle = -1   # used to decide the drawing sequence/location on screen
     X = 1         # sprite horizontal location
     str = ''
     for line in openfile():
@@ -50,6 +50,10 @@ def Part2():
             x = n_cycle % 40
             y = n_cycle // 40
             if x == 39:
+                if abs(X - x) <= 1:
+                    str += '#'
+                else:
+                    str += '.'
                 print(str)
                 str = ''
             else:
@@ -62,6 +66,10 @@ def Part2():
             x = n_cycle % 40
             y = n_cycle // 40
             if x == 39:
+                if abs(X - x) <= 1:
+                    str += '#'
+                else:
+                    str += '.'
                 print(str)
                 str = ''
             else:
@@ -75,7 +83,12 @@ def Part2():
             n_cycle += 1
             x = n_cycle % 40
             y = n_cycle // 40
+
             if x == 39:
+                if abs(X - x) <= 1:
+                    str += '#'
+                else:
+                    str += '.'
                 print(str)
                 str = ''
             else:
