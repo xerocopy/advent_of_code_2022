@@ -9,20 +9,30 @@ class Monkey:
     def __init__(self, name, starting_items, operation, test, if_true, if_false):
         self.name = name
         self.starting_items = starting_items
-        self.operation =operation
+        self.operation = operation
         self.test = test
         self.if_true = if_true
         self.if_false = if_false
 
-    def operation(self, operation, old):
-        operation
-        return new
+    operator = operation.splix(' ')[3]
+    n = operation.split(' ')[4]
 
-    def test(self, ?):
-        if ? % 11 == 0:
-            throw to monkey 5
-        elif ? % 11 != 6:
-            throw to monkey 6
+    if operator == '*' and n == 'old':
+        def operation(x):
+            return x ** 2
+
+    elif operator == '+':
+        def operate(self):
+            return x + int(n)
+
+    def devide(x):
+        if x % test == 0:
+            return if_true
+        elif x % test != 0:
+            return if_false
+
+    def __repr__(self):
+        return name, starting_items, operation, test, if_true, if_false
 
 
 
@@ -32,7 +42,7 @@ def Part1():
     for monkey in monkeys:
         print(monkey)
         list = monkey.split('\n')
-        name = list[0].split(' ')[1].strip(':')
+        name = list[0].strip(':')
         starting_items = list[1].split(':')[1].split(',')
         operation = list[2].split(':')[1]
         test = list[3].split(':')[1].split(' ')[-1]
